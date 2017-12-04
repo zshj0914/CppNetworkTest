@@ -4,7 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "GoKartMovementComponent.h"
+#include "GoKartMovementReplicator.h"
 #include "GoKart.generated.h"
+
+
 
 UCLASS()
 class CPPNETWORKTEST_API AGoKart : public APawn
@@ -28,49 +32,12 @@ public:
 
 private:
 
-	FVector GetAirResistane();
-	FVector GetRollingResistane();
-
-	void UpdateLocationFromVelocity(float DeltaTime);
-
-	void ApplyRotation(float DeltaTime);
-
-	UPROPERTY(EditAnywhere)	// The mass of the car (kg)
-	float Mass = 1000;
-
-	UPROPERTY(EditAnywhere)	// The force applied to the car when the throttle is fully down (N)
-	float MaxDrivingForce = 10000;
-
-	UPROPERTY(EditAnywhere)	// Minimum radius of the car turning circle at full lock (m)
-	float MinTurningRadius = 10;
-
-	UPROPERTY(EditAnywhere)	// Higher means more drag
-	float DragCoefficient = 16;
-
-	UPROPERTY(EditAnywhere) // Higher means more rolling resistance
-	float RollingResistanceCoefficient = 0.015;
-
 	void MoveForward(float Value);
 	void MoveRight(float Value);
-
-	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_MoveForward(float Value);
-
-	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_MoveRight(float Value);
-
-	FVector Velocity;
-
-	UPROPERTY(ReplicatedUsing = OnRep_ReplicatedTransform)
-	FTransform ReplicatedTransform;
-
-	UFUNCTION()
-	void OnRep_ReplicatedTransform();
 	
-	UPROPERTY(Replicated)
-	FRotator ReplicatedRotation;
+	UPROPERTY(VisibleAnywhere)
+	UGoKartMovementComponent* MovementComponent;
 
-	float Throttle;
-	float SteeringThrow;
-
+	UPROPERTY(VisibleAnywhere)
+	UGoKartMovementReplicator* MovementReplicator;
 };
